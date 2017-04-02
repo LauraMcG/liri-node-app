@@ -38,16 +38,24 @@
 //this section is grabbing all of the 'external' libraries and other stuff to be used in this app
 var fs = require('fs');
 var request = require('request');
+var Twitter = require('twitter');
 var twitterKeys = require('./keys.js').twitterKeys;
+var spotify = require('spotify');
+var inquirer = require("inquirer");
+
 
 // creating the variables that will identify the user input
 //action identifies what we're doing with the input, value is the input to be plugged in
 
-var action = process.argv[2];
-var value = process.argv[3];
+
+
+
+
 
 function movieThis (value) {
 
+var value = 
+var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&r=json";
 };
 
 
