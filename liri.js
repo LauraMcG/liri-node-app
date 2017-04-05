@@ -105,6 +105,7 @@ function spotifyThisSong () {
 		console.log(input.song);
 
 		// https://api.spotify.com/v1/search?q=thriller&type=track&limit=1
+		// data.tracks.items[0].album.artists
 
 		spotify.search({ type: 'track', query: input.song}, function(err, data) {
     
@@ -112,7 +113,10 @@ function spotifyThisSong () {
 		        console.log('Error occurred: ' + err);
 		        return;
 		    } else {
-		    	console.log(data.tracks.items[0].album.artists);
+		    	console.log('Song Title: ' + data.tracks.items[0].name);
+		    	console.log('Artist(s): ' + data.tracks.items[0].artists[0].name);
+		    	console.log('Album: ' + data.tracks.items[0].album.name);
+		    	console.log('Preview Link: ' + data.tracks.items[0].preview_url);
 		    };
 
 		});	
