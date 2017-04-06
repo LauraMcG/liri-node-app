@@ -1,37 +1,6 @@
-// =============================================================================
+// LIRI.JS =============================================================================
 /*PSEUDOCODE
-At the top of the liri.js file, write the code you need to grab the data from keys.js. Then store the keys in a variable.
-
-COMMANDS NEEDED
-node liri.js my-tweets
-	displays last 20 tweets and their timestamp
-
-node liri.js spotify-this-song '<song name here>'
-	output song info:
-	Artist(s)
-	The song's name
-	A preview link of the song from Spotify
-	The album that the song is from
-	if no song, then "The Sign" by Ace of Base
-
-node liri.js movie-this '<movie name here>'
-	Output:
-   * Title of the movie.
-   * Year the movie came out.
-   * IMDB Rating of the movie.
-   * Country where the movie was produced.
-   * Language of the movie.
-   * Plot of the movie.
-   * Actors in the movie.
-   * Rotten Tomatoes Rating.
-   * Rotten Tomatoes URL.
-if no movie given, Mr. Nobody
-
-node liri.js do-what-it-says
-	Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
-	It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
-	Feel free to change the text in that document to test out the feature for other commands.
-
+ 
 ** BONUS **
 
 Create a log of the data in log.txt -- append each command, don't overwrite.
@@ -42,6 +11,7 @@ Create a log of the data in log.txt -- append each command, don't overwrite.
 
 // =============================================================================
 
+//"At the top of the liri.js file, write the code you need to grab the data from keys.js. Then store the keys in a variable."
 //this section is grabbing all of the 'external' libraries and other stuff to be used in this app
 var fs = require('fs');
 var request = require('request');
@@ -61,10 +31,8 @@ var inquirer = require('inquirer');
 	displays last 20 tweets and their timestamp
 */
 
-// NOTE TO SELF -- limit tweets to 20 -- how?
+// NOTE TO SELF -- limit tweets to 20
 function myTweets() {
-	// console.log('chirp chirp');
-	// console.log(twitterKeys);
 
 	var client = new Twitter(twitterKeys);
 
@@ -80,7 +48,6 @@ function myTweets() {
 					console.log('---');
 		    	};
 		    }; 
-		// console.log(tweets);
 		// console.log(response);  // Raw response object. 
 	});
 }
@@ -109,7 +76,6 @@ function spotifyThisSong () {
 		console.log(input.song);
 
 		// https://api.spotify.com/v1/search?q=thriller&type=track&limit=1
-		// data.tracks.items[0].album.artists
 
 		spotify.search({ type: 'track', query: input.song}, function(err, data) {
     
@@ -184,9 +150,33 @@ Feel free to change the text in that document to test out the feature for other 
 
 function doWhatItSays() {
 	fs.readFile('random.txt', 'utf8', function(error, data) {
-		console.log(data);
-	});
+		 if ( error ) {
+			console.log('Error occurred: ' + error);
+			return;
+		} else {
+			// console.log(data);
+			//splitting the info into an array for easier access.
+			var dataArray = data.split(',');
+			console.log(dataArray);
+			//Putting this switch in as a workaround for the silly constraints of this assignment.
+			//since i chose to use inquirer instead of process.argv to collect data, 
+			//the spotify-this-song command in the text file is useless otherwise.
+			//This is admittedly a clunky solution to a clunky problem.
 
+			switch (dataArray[0]) {
+			case 'my-tweets':
+			myTweets();
+			break;
+
+			case 'spotify-this-song':
+			spotifyThisSong();
+			break;
+
+			case 'movie-this':
+			movieThis();
+			}
+		}
+	});
 };
 
 
