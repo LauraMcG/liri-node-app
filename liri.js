@@ -212,35 +212,6 @@ inquirer.prompt([
 	name: 'action'
 }
 
-// ]).then(function(user) {
-
-// 	// console.log(user.action);
-
-// 	switch (user.action) {
-// 	case 'look at some tweets':
-// 	// this will link to function that will log the last 20 tweets
-// 	myTweets();
-// 	break;
-
-// 	case 'find info on a song':
-// 	//will run a function to list spotify songs
-// 	spotifyThisSong();
-// 	break;
-
-// 	case 'find info on a movie':
-// 	//runs the movieThis function above, which asks for a movie
-// 	//then searches OMDB and returns info on the movie.
-// 	movieThis();
-		
-// 	break;
-
-// 	case 'do what it says':
-// 	//will run the "i want it that way" nonsense
-// 	doWhatItSays();
-// 	}
-
-// });
-
 ]).then(function(user) {
 
 	// console.log(user.action);
