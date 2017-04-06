@@ -37,18 +37,18 @@ function myTweets() {
 	var client = new Twitter(twitterKeys);
 
 	client.get('statuses/user_timeline', function(err, tweets, response) {
-		 	if ( err ) {
-		        console.log('Error occurred: ' + err);
-		        return;
-		    } else {
+		if ( err ) {
+		    console.log('Error occurred: ' + err);
+		    return;
+		} else {
+		    console.log('Most recent tweets from ' + tweets[0].user.name +':');
 
-		    	for (var i = 0; i < tweets.length; i++) {
-		    		console.log('At ' + tweets[i].created_at + ':');
-					console.log(tweets[i].text);
-					console.log('---');
-		    	};
-		    }; 
-		// console.log(response);  // Raw response object. 
+		    for (var i = 0; i < tweets.length; i++) {
+		    	console.log('---');
+		    	console.log('At ' + tweets[i].created_at + ':');
+				console.log(tweets[i].text);
+		    };
+		}; 
 	});
 }
 
@@ -64,20 +64,11 @@ function myTweets() {
 	The album that the song is from
 	if no song, then "The Sign" by Ace of Base 
 */
-function spotifyThisSong () {
-	inquirer.prompt([
-		{
-			type: 'input',
-			message: 'What song do you want to know about?',
-			name: 'song',
-			default: 'The Sign'
-		}
-	]).then(function(input) {
-		console.log(input.song);
+function spotifyThisSong (song) {
 
-		// https://api.spotify.com/v1/search?q=thriller&type=track&limit=1
-
-		spotify.search({ type: 'track', query: input.song}, function(err, data) {
+	//creating function that will run and return search query.
+	function searchSong (song) {
+		spotify.search({ type: 'track', query: song}, function(err, data) {
     
 		    if ( err ) {
 		        console.log('Error occurred: ' + err);
@@ -90,7 +81,27 @@ function spotifyThisSong () {
 		    };
 
 		});	
+	}
+
+	//check to see if we have already received a song title (like from the text file)
+	//if not, inquirer will ask for one and run searchSong
+	if (song == undefined) {
+			inquirer.prompt([
+		{
+			type: 'input',
+			message: 'What song do you want to know about?',
+			name: 'song',
+			default: 'The Sign'
+		}
+	]).then(function(input) {
+		var newSong = input.song;
+		searchSong(newSong);
 	});	
+	} else {
+		searchSong(song);
+	}
+
+
 };
 
 //MOVIETHIS ---------------------------------------
@@ -111,17 +122,10 @@ if no movie given, Mr. Nobody
 */
 
 //asks the user to identify the movie first.
-function movieThis () {
-	inquirer.prompt([
-		{
-			type: 'input',
-			message: 'What movie do you want to know about?',
-			name: 'movie',
-			default: 'Mr. Nobody'
-		}
-	//Once we know the movie, we query OMDB
-	]).then(function(input) {
-		var queryUrl = "http://www.omdbapi.com/?t=" + input.movie + "&y=&plot=short&r=json";
+function movieThis (movie) {
+	//creating function that will run the search query and display results.
+	function searchMovie (movie) {
+		var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&r=json";
 		//if we have a successful query, all the movie's info is listed:
 		request(queryUrl, function(error,response,body) {
 			if (!error && response.statusCode === 200) {
@@ -136,8 +140,25 @@ function movieThis () {
 				// console.log('Rotten Tomatoes URL: ' + JSON.parse(body).imdbRating);
 			};
 		});
+	}
 
+	//checking to see if a movie has already been received.
+	//if not, inquirer will ask for one then run the search.
+	if (movie == undefined) {
+			inquirer.prompt([
+		{
+			type: 'input',
+			message: 'What movie do you want to know about?',
+			name: 'movie',
+			default: 'Mr. Nobody'
+		}
+	]).then(function(input) {
+		var newMovie = input.movie;
+		searchMovie(newMovie);
 	});	
+	} else {
+		searchSong(movie);
+	}
 };
 
 //DOWHATITSAYS ---------------------------------------
@@ -157,10 +178,11 @@ function doWhatItSays() {
 			// console.log(data);
 			//splitting the info into an array for easier access.
 			var dataArray = data.split(',');
-			console.log(dataArray);
+
 			//Putting this switch in as a workaround for the silly constraints of this assignment.
 			//since i chose to use inquirer instead of process.argv to collect data, 
-			//the spotify-this-song command in the text file is useless otherwise.
+			//the spotify-this-song command in the text file is useless 
+			//because that's in the instructuions based on the premise that i'm using a completely different method to collect data.
 			//This is admittedly a clunky solution to a clunky problem.
 
 			switch (dataArray[0]) {
@@ -169,11 +191,11 @@ function doWhatItSays() {
 			break;
 
 			case 'spotify-this-song':
-			spotifyThisSong();
+			spotifyThisSong(dataArray[1]);
 			break;
 
 			case 'movie-this':
-			movieThis();
+			movieThis(dataArray[1]);
 			}
 		}
 	});
