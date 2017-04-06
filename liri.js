@@ -36,6 +36,10 @@ node liri.js do-what-it-says
 
 Create a log of the data in log.txt -- append each command, don't overwrite.
 */
+
+// basic code structure: an inquirer prompt at the bottom takes in user input through multiple choice. That input is then used to run the appropriate function via a switch.
+//Here we go!
+
 // =============================================================================
 
 //this section is grabbing all of the 'external' libraries and other stuff to be used in this app
@@ -49,7 +53,7 @@ var inquirer = require('inquirer');
 
 // =============================================================================
 //FUNCTIONS//
-//These are the functions the switch refers to after the inital inquirer prompt.
+//These are the functions the switch (below) refers to after the inital inquirer prompt.
 // =============================================================================
 
 // MYTWEETS --------------------------
@@ -170,6 +174,20 @@ function movieThis () {
 	});	
 };
 
+//DOWHATITSAYS ---------------------------------------
+/*
+node liri.js do-what-it-says
+Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
+It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
+Feel free to change the text in that document to test out the feature for other commands.
+*/
+
+function doWhatItSays() {
+	fs.readFile('random.txt', 'utf8', function(error, data) {
+		console.log(data);
+	});
+
+};
 
 
 
@@ -187,9 +205,41 @@ inquirer.prompt([
 {
 	type: 'list',
 	message: 'Hello, friend. What would you like to do?',
-	choices: ['look at some tweets', 'find info on a song', 'find info on a movie', 'do what it says'],
+	choices: ['look at some tweets', 
+			'find info on a song', 
+			'find info on a movie', 
+			'do what it says'],
 	name: 'action'
 }
+
+// ]).then(function(user) {
+
+// 	// console.log(user.action);
+
+// 	switch (user.action) {
+// 	case 'look at some tweets':
+// 	// this will link to function that will log the last 20 tweets
+// 	myTweets();
+// 	break;
+
+// 	case 'find info on a song':
+// 	//will run a function to list spotify songs
+// 	spotifyThisSong();
+// 	break;
+
+// 	case 'find info on a movie':
+// 	//runs the movieThis function above, which asks for a movie
+// 	//then searches OMDB and returns info on the movie.
+// 	movieThis();
+		
+// 	break;
+
+// 	case 'do what it says':
+// 	//will run the "i want it that way" nonsense
+// 	doWhatItSays();
+// 	}
+
+// });
 
 ]).then(function(user) {
 
@@ -215,8 +265,10 @@ inquirer.prompt([
 
 	case 'do what it says':
 	//will run the "i want it that way" nonsense
-	console.log('what it says');
+	doWhatItSays();
 	}
 
 });
+
+
 
