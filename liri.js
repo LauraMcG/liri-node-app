@@ -1,18 +1,13 @@
-// LIRI.JS =============================================================================
-/*PSEUDOCODE
- 
-** BONUS **
+// LIRI.JS =====================================================================
 
-Create a log of the data in log.txt -- append each command, don't overwrite.
-*/
-
-// basic code structure: an inquirer prompt at the bottom takes in user input through multiple choice. That input is then used to run the appropriate function via a switch.
+// basic code structure: an inquirer prompt at the bottom takes in user input through multiple choice.
+//That input is then used to run the appropriate function via a switch.
 //Here we go!
 
 // =============================================================================
 
-//"At the top of the liri.js file, write the code you need to grab the data from keys.js. Then store the keys in a variable."
-//this section is grabbing all of the 'external' libraries and other stuff to be used in this app
+
+//this section is storing all of the 'external' data and libraries to be used in this app as keys
 var fs = require('fs');
 var request = require('request');
 var Twitter = require('twitter');
@@ -23,7 +18,7 @@ var inquirer = require('inquirer');
 
 // =============================================================================
 //FUNCTIONS//
-//These are the functions the switch (below) refers to after the inital inquirer prompt.
+//These are the functions the switch refers to after the inital inquirer prompt.
 // =============================================================================
 
 // MYTWEETS --------------------------
@@ -31,7 +26,6 @@ var inquirer = require('inquirer');
 	displays last 20 tweets and their timestamp
 */
 
-// NOTE TO SELF -- limit tweets to 20
 function myTweets() {
 
 	var client = new Twitter(twitterKeys);
@@ -43,7 +37,7 @@ function myTweets() {
 		} else {
 		    console.log('Most recent tweets from ' + tweets[0].user.name +':');
 
-		    for (var i = 0; i < tweets.length; i++) {
+		    for (var i = 0; i < 20; i++) {
 		    	console.log('---');
 		    	console.log('At ' + tweets[i].created_at + ':');
 				console.log(tweets[i].text);
@@ -66,7 +60,7 @@ function myTweets() {
 */
 function spotifyThisSong (song) {
 
-	//creating function that will run and return search query.
+	//function runs and returns search query.
 	function searchSong (song) {
 		spotify.search({ type: 'track', query: song}, function(err, data) {
     
@@ -93,10 +87,11 @@ function spotifyThisSong (song) {
 			name: 'song',
 			default: 'The Sign'
 		}
-	]).then(function(input) {
-		var newSong = input.song;
-		searchSong(newSong);
-	});	
+		]).then(function(input) {
+			var newSong = input.song;
+			fs.appendFile('log.txt', '\r\n' + newSong);
+			searchSong(newSong);
+		});	
 	} else {
 		searchSong(song);
 	}
@@ -136,8 +131,10 @@ function movieThis (movie) {
 				console.log('Language: ' + JSON.parse(body).Language);
 				console.log('Plot: ' + JSON.parse(body).Plot);
 				console.log('Actors: ' + JSON.parse(body).Actors);
-				// console.log('Rotten Tomatoes Rating: ' + JSON.parse(body).imdbRating);
-				// console.log('Rotten Tomatoes URL: ' + JSON.parse(body).imdbRating);
+				console.log('Rotten Tomatoes Rating: ' + JSON.parse(body).Ratings[1].Value);
+				console.log('Rotten Tomatoes URL: ' + 'https://www.rottentomatoes.com/search/?search=' + encodeURI(movie));
+				//this was the cleanest way I could find to generate a working URL from the user input
+				//OMDB doesn't provide a Ritten Tomatoes URL to the movie in its API.
 			};
 		});
 	}
@@ -154,6 +151,7 @@ function movieThis (movie) {
 		}
 	]).then(function(input) {
 		var newMovie = input.movie;
+		fs.appendFile('log.txt', '\r\n' + newMovie);
 		searchMovie(newMovie);
 	});	
 	} else {
@@ -226,8 +224,10 @@ inquirer.prompt([
 
 ]).then(function(user) {
 
-	// console.log(user.action);
+	//Create a log of the data in log.txt -- append each command, don't overwrite. -- done!
+	fs.appendFile('log.txt', '\r\n' + user.action);
 
+	//switch to redirect user to the appropriate function
 	switch (user.action) {
 	case 'look at some tweets':
 	// this will link to function that will log the last 20 tweets
@@ -253,5 +253,5 @@ inquirer.prompt([
 
 });
 
-
+//end code
 
