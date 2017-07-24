@@ -20,4 +20,3 @@ Meet Liri: a personal desktop assistant that can return tweets and search for in
 * Online Movie Database (OMDB) API: (http://www.omdbapi.com)
 * node.js
 * JavaScript
-*
